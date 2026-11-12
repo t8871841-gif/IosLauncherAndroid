@@ -18,10 +18,12 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Install SDK platform 37 preview and build tools
+        # NOTE: do NOT use android-actions/setup-android here — its default
+        # package list includes "tools", which no longer exists in the SDK
+        # repository ("Failed to find package 'tools'"), failing the run in
+        # ~20s. The ubuntu runner already ships ANDROID_HOME +
+        # cmdline-tools, so install straight from the preinstalled sdkmanager.
         run: |
           yes | sdkmanager --licenses
           sdkmanager "platforms;android-37.2-beta3" "build-tools;37.0.0" "platform-tools"
