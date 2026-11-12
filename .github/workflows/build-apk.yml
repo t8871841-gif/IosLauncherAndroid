@@ -24,9 +24,11 @@ jobs:
         # repository ("Failed to find package 'tools'"), failing the run in
         # ~20s. The ubuntu runner already ships ANDROID_HOME +
         # cmdline-tools, so install straight from the preinstalled sdkmanager.
+        # sdkmanager is NOT on PATH in run steps — call it by absolute path.
         run: |
-          yes | sdkmanager --licenses
-          sdkmanager "platforms;android-37.2-beta3" "build-tools;37.0.0" "platform-tools"
+          SDKMANAGER="${ANDROID_HOME:-/usr/local/lib/android/sdk}/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses
+          "$SDKMANAGER" "platforms;android-37.2-beta3" "build-tools;37.0.0" "platform-tools"
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
